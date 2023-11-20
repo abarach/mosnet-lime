@@ -9,6 +9,11 @@ Rashid Sowah.6
 CSE 5539 - Khaliligarekani</br>
 November 20, 2023
 
+## Project Deliverables
+- [Code](https://github.com/abarach/mosnet-lime)
+- [Presentation slides](https://buckeyemailosu-my.sharepoint.com/:p:/r/personal/lamba_39_buckeyemail_osu_edu/Documents/2023.12.04_FinalProjectPresentation_Lamba_Sowah.pptx?d=wc18f462a9f3b4b0fb0672785b4bc809a&csf=1&web=1&e=or9dcY)
+- *Paper*
+
 ## File Structure
 The file structure is modified from the [original MOSNet implementation](https://github.com/lochenchou/MOSNet).
 - `data` contains scripts and tables delineating the VCC Voice Conversion Dataset used to train MOSNet. 
@@ -33,11 +38,11 @@ The LIME framework attempts to explain a classifier's prediction by using an alr
 *Final Presentation*: Monday, December 4, 2023 </br>
 *Slides, Code, and Paper due*: Tuesday, December 5, 2023
 
-* Predict MOS score for a sample input.
-* Generate a LIME explanation for that sample input.
-* Generalize the script to predict and explain several data inputs. 
-* Write paper. 
-* Write presentation slides. 
+- Predict MOS score for a sample input.
+- Generate a LIME explanation for that sample input.
+- Generalize the script to predict and explain several data inputs. 
+- Write paper. 
+- Write presentation slides. 
 
 ## References
 [1] M. T. Ribeiro, S. Singh, and C. Guestrin, [“‘Why Should I Trust You?” Explaining the Predictions of Any Classifier,”](https://arxiv.org/pdf/1602.04938.pdf) in *KDD ’16: Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining*, 2016, pp. 1135–1144.</br>
