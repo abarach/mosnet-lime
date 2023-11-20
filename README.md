@@ -1,70 +1,44 @@
-# MOSNet
-Implementation of  "MOSNet: Deep Learning based Objective Assessment for Voice Conversion"
-https://arxiv.org/abs/1904.08352
+# Explaining the Predictions of the MOSNet Classifier via the LIME Framework
+mplementation of paper: ["'Why Should I Trust You?' Explaining the Predictions of any Classifier"](https://arxiv.org/pdf/1602.04938.pdf). By modifying the proposed framework to work for [MOSNet](https://arxiv.org/pdf/1904.08352.pdf), we attempt to draw conclusions about which features are particularly relevant during audio classification.
 
-## Dependency
-Linux Ubuntu 16.04
-- GPU: GeForce RTX 2080 Ti
-- Driver version: 418.67
-- CUDA version: 10.1
+### Authors
+Ada Lamba.39 </br>
+Rashid Sowah.6
 
-Python 3.5
-- tensorflow-gpu==2.0.0-beta1 (cudnn=7.6.0)
-- scipy
-- pandas
-- matplotlib
-- librosa
+### Version
+CSE 5539 - Khaliligarekani</br>
+November 20, 2023
 
-### Environment set-up
-For example,
-```
-conda create -n mosnet python=3.5
-conda activate mosnet
-pip install -r requirements.txt
-conda install cudnn=7.6.0
-```
+## File Structure
+The file structure is modified from the [original MOSNet implementation](https://github.com/lochenchou/MOSNet).
+- `data` contains scripts and tables delineating the VCC Voice Conversion Dataset used to train MOSNet. 
+- `lime` contains a copy of the LIME framework implementation.
+- `pre_trained` contains pre-trained `.h5` files for three different MOSNet versions: CNN, CNN + BLSTM, and BLSTM.
+- `model.py` defines the MOSNet model object.
+- `mosnet_lime.py` **is the code written for this project**.
+- `original_MOSNET_README.md` is the original README for the MOSNet implementation. 
+- `requirements.txt` lists the library dependencies for the project. 
+- `test.py`, `train.py`, `custom_test.py`, and `utils.py` are training, testing, and utility scripts for MOSNet. 
 
-## Usage
+## MOSNet Framework
+MOSNet is a convolution and recurrent neural network proposed by Lo et al. in 2021 [2]. It takes the magnitude spectrogram of an audio signal as input and predicts the [mean opinion score (MOS)](https://en.wikipedia.org/wiki/Mean_opinion_score) of the signal. 
 
-### Reproducing results in the paper
+## LIME Explanations 
+The LIME framework attempts to explain a classifier's prediction by using an already-interpretable model which locally approximates the target classifier [1]. 
 
-1. `cd ./data` and run `bash download.sh` to download the VCC2018 evaluation results and submitted speech. (downsample the submitted speech might take some times)
-2. Run `python mos_results_preprocess.py` to prepare the evaluation results. (Run `python bootsrap_estimation.py` to do the bootstrap experiment for intrinsic MOS calculation)
-3. Run `python utils.py` to extract .wav to .h5
-4. Run `python train.py --model CNN-BLSTM` to train a CNN-BLSTM version of MOSNet. ('CNN', 'BLSTM' or 'CNN-BLSTM' are supported in model.py, as described in paper)
-5. Run `python test.py` to test on the pre-trained weights with specified model and weight.
+## Project Status
+`mosnet_lime.py` initializes the LIME explainer and MOSNet pre-trained model. 
 
+## To Do
+*Final Presentation*: Monday, December 4, 2023 </br>
+*Slides, Code, and Paper due*: Tuesday, December 5, 2023
 
-#### Note
-The experimental results showed in the paper were trained on Keras with tensorflow 1.4.1 backend. However, the implementation here is based on tf2.0.0b1, so the results might vary a little. Additionally, the architectures showed in the paper were meta-architectures, any replace CNN/BLSTM with more fancy modules (ResNet etc.) would improve the final results. Tuning the hyper-parameters might result in the same favour. 
+* Predict MOS score for a sample input.
+* Generate a LIME explanation for that sample input.
+* Generalize the script to predict and explain several data inputs. 
+* Write paper. 
+* Write presentation slides. 
 
-### Evaluating your custom waveform samples
-
-1. Put the waveforms you wish to evaluate in a folder. For example, `<path>/<to>/<samples>`
-2. Run `python python ./custom_test.py --rootdir <path>/<to>/<samples>`
-
-This script will evaluate all the `.wav` files in `<path>/<to>/<samples>`, and write the results to `<path>/<to>/<samples>/MOSnet_result_raw.txt`. By default, the `pre_trained/cnn_blstm.h5` pretrained model is used. If you wish to use other models, please specify a different `--pretrained_model` and also change `from model import <model_to_be_used>`.
-
-## Citation
-
-If you find this work useful in your research, please consider citing:
-```
-@inproceedings{mosnet,
-  author={Lo, Chen-Chou and Fu, Szu-Wei and Huang, Wen-Chin and Wang, Xin and Yamagishi, Junichi and Tsao, Yu and Wang, Hsin-Min},
-  title={MOSNet: Deep Learning based Objective Assessment for Voice Conversion},
-  year=2019,
-  booktitle={Proc. Interspeech 2019},
-}
-```
- 
- 
-## License
-
-This work is released under MIT License (see LICENSE file for details).
-
-
-## VCC2018 Database & Results
-
-The model is trained on the large listening evaluation results released by the Voice Conversion Challenge 2018.<br>
-The listening test results can be downloaded from [here](https://datashare.is.ed.ac.uk/handle/10283/3257)<br>
-The databases and results (submitted speech) can be downloaded from [here](https://datashare.is.ed.ac.uk/handle/10283/3061)<br>
+## References
+[1] M. T. Ribeiro, S. Singh, and C. Guestrin, [“‘Why Should I Trust You?” Explaining the Predictions of Any Classifier,”](https://arxiv.org/pdf/1602.04938.pdf) in *KDD ’16: Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining*, 2016, pp. 1135–1144.</br>
+[2] C.-C. Lo, S.-W. Fu, W.-C. Huang, X. Wang, J. Yamagishi, Y. Tsao, and H.-M. Wang, [“MOSNet: Deep learning based objective assessment for voice conversion,”](https://arxiv.org/pdf/1904.08352.pdf) in *Proc. Interspeech 2019*, 2019.
