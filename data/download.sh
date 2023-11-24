@@ -11,7 +11,7 @@ rm vcc2018_submitted_systems_converted_speech.tar.gz
 # rename dir
 mkdir submit
 mv ./mnt/sysope/test_files/testVCC2/*.wav ./submit
-rm -r ./mnt
+#rm -r ./mnt
 
 # downsample
-python downsample.py
+#python3 downsample.py

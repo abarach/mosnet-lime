@@ -1,9 +1,8 @@
 # Explaining the Predictions of the MOSNet Classifier via the LIME Framework
 mplementation of paper: ["'Why Should I Trust You?' Explaining the Predictions of any Classifier"](https://arxiv.org/pdf/1602.04938.pdf). By modifying the proposed framework to work for [MOSNet](https://arxiv.org/pdf/1904.08352.pdf), we attempt to draw conclusions about which features are particularly relevant during audio classification.
 
-### Authors
-Ada Lamba.39 </br>
-Rashid Sowah.6
+### Author
+Ada Lamba.39
 
 ### Version
 CSE 5539 - Khaliligarekani</br>

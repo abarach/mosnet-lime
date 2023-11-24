@@ -37,14 +37,11 @@ def init():
     representation of a sound file. 
     """
     # initialize model
-    MOSNet = model.CNN_BLSTM()
-    model = MOSNet.build()
+    mosnet = model.CNN_BLSTM()
+    mosnet_model = mosnet.build()
 
     # load pre-trained weights
-    model.load_weights(os.path.join(PRE_TRAINED_DIR, 'cnn_blstm.h5'))
-
-    # initialize LIME explainer
-    explainer = LimeTabularExplainer(class_names=CLASS_NAMES)
+    mosnet_model.load_weights(os.path.join(PRE_TRAINED_DIR, 'cnn_blstm.h5'))
 
     # load input data
     mos_list = utils.read_list(os.path.join(DATA_DIR,'mos_list.txt'))
@@ -55,7 +52,10 @@ def init():
 
     # get magnitude spectrogram feature (input for MOSNet)
     _feat = utils.read(os.path.join(BIN_DIR,filename+'.h5'))
-    _mag = _feat['mag_sgram'] 
+    _mag = _feat['mag_sgram'][0]
+    
+    # initialize LIME explainer
+    explainer = LimeTabularExplainer(training_data=_mag, class_names=CLASS_NAMES)
 
 
 if __name__ == '__main__':
