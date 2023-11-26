@@ -39,7 +39,7 @@ def get_spectrograms(sound_file, fs=FS, fft_size=FFT_SIZE):
     mag = np.abs(linear) #(1+n_fft/2, T)
     
     # shape in (T, 1+n_fft/2)
-    return np.transpose(mag.astype(np.float32))  
+    return (np.transpose(mag.astype(np.float32)), fs)
 
 
 def read_list(filelist):
