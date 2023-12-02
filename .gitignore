@@ -166,5 +166,6 @@ data/submit/
 data/vcc2018_listening_test_scores/
 data/wav/
 data/bin/
+data/mnt/
 __pycache__/
 
