@@ -1,8 +1,8 @@
 """
 Author: Ada Lamba
 Course: CSE 5539
-Instructor: Khaliligarekani
-Version: 11/13/2023
+Instructor: Khalili
+Version: 12/02/2023
 
 Explaining MOSNet Predictions via LIME Framework:
     In this file, we use the pretrained CNN-BLSTM model from [MOSNet](https://github.com/lochenchou/MOSNet) to predict 
@@ -10,101 +10,83 @@ Explaining MOSNet Predictions via LIME Framework:
 """
 
 import os
-from lime import lime_tabular
 from lime.lime_tabular import LimeTabularExplainer
 import model        # MOSNet model definition
 import utils
 import random
 random.seed(1984)   # Set seed to ensure same test/train split as MOSNet original implementation
 import numpy as np
-import librosa
-import matplotlib.pyplot as plt
-import librosa.display
 
 DATA_DIR = './data'
-WAV_DIR = os.path.join(DATA_DIR, 'wav')
 BIN_DIR = os.path.join(DATA_DIR, 'bin')
 PRE_TRAINED_DIR = './pre_trained'
 CLASS_NAMES = ['1', '2', '3', '4', '5']
-NUM_TEST = 4000       # Defined in MOSNet train/validation/test split
-NUM_VALID = 3000      # Defined in MOSNet train/validation/test split
-BATCH_SIZE = 64
-
-heatmap_path = os.path.join('lime/heatmaps/')
 
 def main():
-    # setup
-    init()
+    # preprocess data
+    # num_test, num_valid, and batch_size values are defined in the MOSNet train/validation/test split
+    (train_feats, train_labels, test_feats, _) = preprocess(num_test=4000, num_valid=3000, batch_size=64)
     
+    # setup models and explainer
+    mosnet_model, explainer = init(train_feats, train_labels)
     
-def init():
-    """
-    Import necessary models, load the pre-trained MOSNet model (CNN-BLSTM version), initialize the LIME explainer, 
-    and load the input data. For the LIME framework, we use the tabular implementation. 
-    There is no LIME implementation for audio, so we first attempt to use the LIME explainer on the matrix 
-    representation of a sound file. 
-    """
+    # explain a data instance
+    expl_idx = np.random.randint(0, test_feats.shape[0])
+    explain(explainer, test_feats, expl_idx, mosnet_model)
+    
+     
+def preprocess(num_test, num_valid, batch_size):
+    print('Loading data...', end='', flush=True)
+    
+    # get list of input audio files, shuffle, and split up by test/train split
+    mos_list = utils.read_list(os.path.join(DATA_DIR,'mos_list.txt'))
+    random.shuffle(mos_list)
+    test_list = mos_list[-num_test:]
+    train_list= mos_list[0:-(num_test+num_valid)]
+
+    # generate features/labels for train and test set
+    (train_feats, train_labels) = get_features(train_list, batch_size)
+    (test_feats, test_labels) = get_features(test_list, batch_size)
+    print('Done')
+    
+    return (train_feats, train_labels, test_feats, test_labels)
+
+
+def get_features(data_list, batch_size):
+    # get one batch's worth of data from data_list
+    gen = utils.data_generator(data_list, BIN_DIR, frame=False, batch_size=batch_size)
+    data = next(gen)
+    
+    # split up features and label
+    # flatten last two dimensions: (64, 397, 257) to (64, 102029)
+    feats = data[0].reshape(data[0].shape[0], -1)
+    labels = [int((np.trunc(i))) for i in data[1][0]]
+    
+    return (feats, labels)
+     
+     
+def init(train_feats, train_labels):
     # initialize model
     mosnet = model.CNN_BLSTM()
     mosnet_model = mosnet.build()
 
     # load pre-trained weights
     mosnet_model.load_weights(os.path.join(PRE_TRAINED_DIR, 'cnn_blstm.h5'))
+    print('Done')
 
-    # load input data
-    mos_list = utils.read_list(os.path.join(DATA_DIR,'mos_list.txt'))
-    random.shuffle(mos_list)
-    test_list = mos_list[-NUM_TEST:]        # split test/train
-    train_list= mos_list[0:-(NUM_TEST+NUM_VALID)]
-    train_data = list(get_generated_data(utils.data_generator(train_list, BIN_DIR, frame=True, batch_size=BATCH_SIZE)))
-    filepath = test_list[0].split(',')      # grab first test instance - TODO: use all test instances
-    filename = filepath[0].split('.')[0]
-
-    # get magnitude spectrogram feature (input for MOSNet)
-    file = os.path.join(BIN_DIR, filename+'.h5')
-    _feat = utils.read(file)
-    _mag = _feat['mag_sgram']
-    
-    # get image of audio file
-    audio_file = os.path.join(WAV_DIR, filename+'.wav')
-    spec_transpose, sr = utils.get_spectrograms(audio_file)
-    spec = np.transpose(spec_transpose)
-    
-    # plot file
-    f, (ax1, ax2) = plt.subplots(1, 2, figsize=(28, 9))
-    
-    # render original heatmap
-    p1 = librosa.display.specshow(librosa.amplitude_to_db(spec,ref=np.max), cmap='jet',y_axis='linear', x_axis='time', sr=sr, ax=ax1)
-    #ax1.set_title('Input Spectrogram\nTrue MOS: {}'.format(y)) #\nPredicted MOS: {}'.format(y, ypred[0][0]))
-    ax1.set_xlabel('Time')
-    ax1.set_ylabel('Frequency (Hz)')
-    f.colorbar(p1, ax=ax1, format="%+2.f dB")
-    plt.savefig(os.path.join(heatmap_path, '{}_spec.jpeg'.format(filename)))
-    plt.close(f)
-    
-    # get MOSNet prediction
-    [y_pred, _] = mosnet_model.predict(_mag, verbose=0, batch_size=1)
-    
-    # convert to classification
-    category_idx = int((np.trunc(y_pred) - 1)[0][0])
-    class_probs = [0, 0, 0, 0, 0]
-    class_probs[category_idx] = 1
-    
     # initialize LIME explainer
-    explainer = LimeTabularExplainer(training_data=train_data, class_names=CLASS_NAMES)
-    #explainer.explain_instance(_mag)s
+    print('Initializing LIME explainer...', end='', flush=True)
+    explainer = LimeTabularExplainer(training_data=train_feats, training_labels=train_labels, class_names=CLASS_NAMES)
+    print('Done')
+    
+    return mosnet, explainer
 
 
-def get_generated_data(generator):
-    """Given a data generator, returns all data generated.
-
-    Args:
-        generator (Generator): the Generator to produce data
-
-    Yields:
-        list: all data from the Generator
-    """
-    yield from generator
+def explain(explainer, test_feats, test_idx, model_obj):
+    print(f'Explaining test instance {test_idx}...', end='', flush=True)
+    exp = explainer.explain_instance(test_feats[test_idx], model_obj.flatten_predict)
+    print('Done')
+    exp.show_in_notebook(show_table=True, show_all=False)
 
 if __name__ == '__main__':
     main()

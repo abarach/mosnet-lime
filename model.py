@@ -8,7 +8,7 @@ from tensorflow.keras.constraints import max_norm
 class CNN_BLSTM(object):
     
     def __init__(self):
-        print('CNN_BLSTM init')
+        print('CNN_BLSTM init...', end='')
         
     def build(self):
         _input = keras.Input(shape=(None, 257))
@@ -50,8 +50,19 @@ class CNN_BLSTM(object):
         average_score=layers.GlobalAveragePooling1D(name='avg')(frame_score)
 
         model = Model(outputs=[average_score, frame_score], inputs=_input)
+        self.model = model
         
         return model
+    
+
+    def flatten_predict(self, data):
+        # reshape data from (1, _) to (1, 397, 257)
+        unflat = data.reshape((1, 397, 257))
+        
+        # call prediction method
+        [y_pred, _] = self.model.predict(unflat, verbose=0, batch_size=1)
+        
+        return y_pred
     
 
 
