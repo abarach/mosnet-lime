@@ -77,28 +77,7 @@ def preprocess(num_test, generate_spec):
     if generate_spec:
         generate_spectrograms(test_list)
 
-def get_features(data_list, batch_size):
-    """Calls the MOSNet data generator to produce a batch's worth of data. 
 
-    Args:
-        data_list (list): a list of data to generate from
-        batch_size (int): batch size
-
-    Returns:
-        (list, list): a tuple contain the generated data features and labels
-    """
-    # get one batch's worth of data from data_list
-    gen = utils.data_generator(data_list, BIN_DIR, frame=False, batch_size=batch_size)
-    data = next(gen)
-    
-    # split up features and label
-    # flatten last two dimensions: (64, 397, 257) to (64, 102029)
-    feats = data[0].reshape(data[0].shape[0], -1)
-    labels = [int((np.trunc(i))) for i in data[1][0]]
-    
-    return (feats, labels)
-     
-     
 def init():
     """Initializes the MOSNet model and LIME framework.
 

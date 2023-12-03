@@ -1,5 +1,5 @@
 # Explaining the Predictions of the MOSNet Classifier via the LIME Framework
-mplementation of paper: ["'Why Should I Trust You?' Explaining the Predictions of any Classifier"](https://arxiv.org/pdf/1602.04938.pdf). By modifying the proposed framework to work for [MOSNet](https://arxiv.org/pdf/1904.08352.pdf), we attempt to draw conclusions about which features are particularly relevant during audio classification.
+Implementation of paper: ["'Why Should I Trust You?' Explaining the Predictions of any Classifier"](https://arxiv.org/pdf/1602.04938.pdf). By modifying the proposed framework to work for [MOSNet](https://arxiv.org/pdf/1904.08352.pdf), we attempt to draw conclusions about which features are particularly relevant during audio classification.
 
 ### Author
 Ada Lamba.39
@@ -9,16 +9,16 @@ CSE 5539 - Khaliligarekani</br>
 November 20, 2023
 
 ## Project Deliverables
-- [Code](https://github.com/abarach/mosnet-lime)
-- [Presentation slides](https://buckeyemailosu-my.sharepoint.com/:p:/r/personal/lamba_39_buckeyemail_osu_edu/Documents/2023.12.04_FinalProjectPresentation_Lamba_Sowah.pptx?d=wc18f462a9f3b4b0fb0672785b4bc809a&csf=1&web=1&e=or9dcY)
-- *Paper*
+- [Code](https://github.com/abarach/mosnet-lime/tree/main)
+- [Presentation slides](https://github.com/abarach/mosnet-lime/tree/main/docs/2023.12.04_FinalProjectPresentation_Lamba.pdf)
+- [Paper](https://github.com/abarach/mosnet-lime/tree/main/docs/FinalReport_Lamba.pdf)
 
 ## File Structure
 The file structure is modified from the [original MOSNet implementation](https://github.com/lochenchou/MOSNet).
 - `data` contains scripts and tables delineating the VCC Voice Conversion Dataset used to train MOSNet. 
 - `lime` contains a copy of the LIME framework implementation.
 - `pre_trained` contains pre-trained `.h5` files for three different MOSNet versions: CNN, CNN + BLSTM, and BLSTM.
-- `model.py` defines the MOSNet model object.
+- `model.py` defines the MOSNet model object, and **was modified for this project**.
 - `mosnet_lime.py` **is the code written for this project**.
 - `original_MOSNET_README.md` is the original README for the MOSNet implementation. 
 - `requirements.txt` lists the library dependencies for the project. 
