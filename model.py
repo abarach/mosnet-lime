@@ -1,9 +1,15 @@
-import tensorflow
 from tensorflow import keras
 from tensorflow.keras import Model, layers
 from tensorflow.keras.layers import Dense, Dropout, Conv2D
 from tensorflow.keras.layers import LSTM, TimeDistributed, Bidirectional
 from tensorflow.keras.constraints import max_norm
+from keras.preprocessing import image
+import numpy as np
+import utils
+import os
+
+DATA_DIR = './data'
+BIN_DIR = os.path.join(DATA_DIR, 'bin')
 
 class CNN_BLSTM(object):
     
@@ -65,6 +71,39 @@ class CNN_BLSTM(object):
         return y_pred
     
 
+    def image_predict(self, im_data_list):
+        preds = []
+        
+        if len(im_data_list) != len(self.data_instance):
+            print('Error! Self.data_instance does not match im_data_list')
+            exit(-1)
+        
+        for idx in range(len(im_data_list)):
+            # call MOSNet
+            [y_pred, _] = self.model.predict(self.data_instance[idx], verbose=0, batch_size=1)
+            
+            # convert to classification
+            class_pred_idx = int(np.trunc(y_pred[0][0]))-1
+            probs = [0, 0, 0, 0, 0]
+            probs[class_pred_idx] = 1
+            preds.append(probs)
+            
+        return preds
+    
+    
+    def set_instance(self, fname_list):
+        self.data_instance = []
+        
+        for fname in fname_list:
+            # fname has format dir/[name]-spec.png
+            # get [name]
+            filename = fname.split('/')[-1]
+            filename = filename.split('-')[0]
+        
+            _feat = utils.read(os.path.join(BIN_DIR,filename+'.h5'))
+            _mag = _feat['mag_sgram']
+            self.data_instance.append(_mag)
+        
 
 class CNN(object):
     
@@ -133,11 +172,4 @@ class BLSTM(object):
         model = Model(outputs=[average_score, frame_score], inputs=_input)
         
         return model
-
-
-
-
-
-
-
 
