@@ -143,11 +143,13 @@ def explain_image(explainer, img_dir, model_obj):
     model_obj.set_instance(images)
     exp = explainer.explain_instance(im.astype('double'), model_obj.image_predict, hide_color=0, num_samples=10)
     print('Done')
-    save_expl_figs(exp)
+    true_mos = get_true_mos(images[0], model_obj)
+    save_expl_figs(exp, images[0].split('/')[-1], true_mos)
     
 
-def save_expl_figs(explanation):
+def save_expl_figs(explanation, im_file, true_mos):
     print('Saving explanations...', end='', flush=True)
+    
     #Select the same class explained on the figures above.
     ind =  explanation.top_labels[0]
 
@@ -158,8 +160,17 @@ def save_expl_figs(explanation):
     #Plot. The visualization makes more sense if a symmetrical colorbar is used.
     plt.imshow(heatmap, cmap = 'RdBu', vmin  = -heatmap.max(), vmax = heatmap.max())
     plt.colorbar()
+    plt.title(f'Explanation for {im_file}\nTrue MOS: {true_mos}, Predicted MOS: {ind}')
     plt.savefig(os.path.join(EXP_DIR, 'expl.png'))
     print('Done')
+
+
+def get_true_mos(im_path, model_obj):
+    filename = im_path.split('/')[-1].split('-')[0]
+    _feat = utils.read(os.path.join(BIN_DIR,filename+'.h5'))
+    _mag = _feat['mag_sgram']
+    [y_pred, _] = model_obj.model.predict(_mag, verbose=0, batch_size=1)
+    return y_pred[0][0]
 
 
 def generate_spec(file_list, num=10, start=0):
