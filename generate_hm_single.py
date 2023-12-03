@@ -25,8 +25,8 @@ PRE_TRAINED_DIR = '/Users/adabarach/Documents/OSU/2023-2024/AU23/CSE 5539 - Khal
 def main():
     # pick a soundfile
     mos_list = utils.read_list(data_list_path)
-    filename = mos_list[0].split(',')[0]
-    true_mos = float(mos_list[0].split(',')[1])
+    filename = mos_list[1].split(',')[0]
+    true_mos = float(mos_list[1].split(',')[1])
     
     generate_heatmaps(true_mos, filename)   
 
@@ -45,7 +45,7 @@ def generate_heatmaps(y, filename):
     # render original heatmap
     spec, sr = utils.get_spectrograms(os.path.join(WAV_DIR,filename))
     spec = np.transpose(spec)       # utils transposes before returning
-    p1 = librosa.display.specshow(librosa.amplitude_to_db(spec,ref=np.max), cmap='jet',y_axis='linear', x_axis='time', sr=sr, ax=ax1)
+    p1 = librosa.display.specshow(librosa.amplitude_to_db(spec,ref=np.max),y_axis='linear', x_axis='time', sr=sr, ax=ax1)
     ax1.set_title('Input Spectrogram\nMOS: {}'.format(y))
     ax1.set_xlabel('Time')
     ax1.set_ylabel('Frequency (Hz)')
