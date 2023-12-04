@@ -130,7 +130,7 @@ def save_expl_figs(explanation, im_file, true_mos):
         true_mos (int): the correct MOS score
     """
     #Select the same class explained on the figures above.
-    ind =  explanation.top_labels[0] + 1
+    ind =  explanation.top_labels[0]
 
     #Map each explanation weight to the corresponding superpixel
     dict_heatmap = dict(explanation.local_exp[ind])
@@ -139,7 +139,7 @@ def save_expl_figs(explanation, im_file, true_mos):
     #Plot. The visualization makes more sense if a symmetrical colorbar is used.
     plt.imshow(heatmap, cmap = 'RdBu', vmin  = -heatmap.max(), vmax = heatmap.max())
     plt.colorbar()
-    plt.title(f'Explanation for {im_file}\nTrue MOS: {true_mos}, Predicted MOS: {ind}')
+    plt.title(f'Explanation for {im_file}\nTrue MOS: {true_mos}, Predicted MOS: {ind+1}')
     plt.axis('off')
     plt.savefig(os.path.join(EXP_DIR, f'{im_file}-expl.png'))
     plt.close()
