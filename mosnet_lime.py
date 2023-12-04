@@ -138,10 +138,10 @@ def save_expl_figs(explanation, im_file, true_mos):
 
     #Plot. The visualization makes more sense if a symmetrical colorbar is used.
     plt.imshow(heatmap, cmap = 'RdBu', vmin  = -heatmap.max(), vmax = heatmap.max())
-    plt.colorbar()
+    #plt.colorbar()
     plt.title(f'Explanation for {im_file}\nTrue MOS: {true_mos}, Predicted MOS: {ind+1}')
-    plt.axis('off')
-    plt.savefig(os.path.join(EXP_DIR, f'{im_file}-expl.png'))
+    plt.colorbar(fraction=0.046, pad=0.04)
+    plt.savefig(os.path.join(EXP_DIR, f'{im_file}-expl.png'), bbox_inches='tight', pad_inches=0.0)
     plt.close()
 
 
