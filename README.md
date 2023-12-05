@@ -5,13 +5,13 @@ Implementation of paper: ["'Why Should I Trust You?' Explaining the Predictions 
 Ada Lamba.39
 
 ### Version
-CSE 5539 - Khaliligarekani</br>
+CSE 5539 - Khalili</br>
 December 4, 2023
 
 ## Project Deliverables
 - [Code](https://github.com/abarach/mosnet-lime/tree/main)
 - [Presentation slides](https://github.com/abarach/mosnet-lime/tree/main/docs/2023.12.04_FinalProjectPresentation_Lamba.pdf)
-- [Paper](https://github.com/abarach/mosnet-lime/tree/main/docs/FinalReport_Lamba.pdf)
+- [Paper](https://github.com/abarach/mosnet-lime/tree/main/docs/Lamba_FinalReport_ExplainingMOSNetViaLIME.pdf)
 
 ## File Structure
 The file structure is modified from the [original MOSNet implementation](https://github.com/lochenchou/MOSNet).
@@ -28,20 +28,7 @@ The file structure is modified from the [original MOSNet implementation](https:/
 MOSNet is a convolution and recurrent neural network proposed by Lo et al. in 2021 [2]. It takes the magnitude spectrogram of an audio signal as input and predicts the [mean opinion score (MOS)](https://en.wikipedia.org/wiki/Mean_opinion_score) of the signal. 
 
 ## LIME Explanations 
-The LIME framework attempts to explain a classifier's prediction by using an already-interpretable model which locally approximates the target classifier [1]. 
-
-## Project Status
-`mosnet_lime.py` initializes the LIME explainer and MOSNet pre-trained model. 
-
-## To Do
-*Final Presentation*: Monday, December 4, 2023 </br>
-*Slides, Code, and Paper due*: Tuesday, December 5, 2023
-
-- Predict MOS score for a sample input.
-- Generate a LIME explanation for that sample input.
-- Generalize the script to predict and explain several data inputs. 
-- Write paper. 
-- Write presentation slides. 
+The LIME framework attempts to explain a classifier's prediction by learning an already-interpretable model which locally approximates the target classifier [1]. 
 
 ## References
 [1] M. T. Ribeiro, S. Singh, and C. Guestrin, [“‘Why Should I Trust You?” Explaining the Predictions of Any Classifier,”](https://arxiv.org/pdf/1602.04938.pdf) in *KDD ’16: Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining*, 2016, pp. 1135–1144.</br>
